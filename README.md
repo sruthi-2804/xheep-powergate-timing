@@ -46,7 +46,11 @@ appear in the trace (the testbench instantiates the DUT as `testharness_i`):
 - `off_cycles`  — `cpu_subsystem_powergate_switch_no` low → high (domain truly off)
 - `wake_cycles` — switch-on → `cpu_subsystem_powergate_iso_n` release (full recovery)
 
-Each point averages the 4 timer-driven gating episodes in the application.
+Each point averages the 4 timer-driven gating episodes, which precede the DMA
+and GPIO wake tests in the application (`main.c` lines 129–171 vs 189/257).
+`measure_pg.py` therefore takes the first four episodes; the `episodes` column
+in the CSV is capped at 4 by construction and is a sanity check, not a count of
+all gating events in the run.
 
 Scripts: `measure_pg.py` (waveform → cycle counts), `sweep_pg.py` (sweep
 driver), `breakeven.py` (analysis).
@@ -82,13 +86,23 @@ iso_on = reset_on + 5`). Measured exactly at delta = 20, 100, 1000.
 | 3 | 111.5 | 111.2 | −0.3 | measured after fitting |
 | 5 | 311.5 | 311.2 | −0.3 | measured after fitting |
 | 64 | 6211.5 | 6211.5 | +0.0 | used in fit |
-| 70 | 6811.5 | 6812.0 | +0.5 | **held out** — earlier run, not used in fit |
+| 70 | 6811.5 | 6812.0 | +0.5 | **held out** — unmodified upstream run, not used in fit |
 | 256 | 25411.5 | 25411.5 | +0.0 | used in fit |
 
-Max error 0.5 cycles across an 85× range in idle length. Both coefficients are
-physically meaningful rather than empirical:
+Max error 0.5 cycles across an 85× range in idle length.
 
-- **slope = 100.0 exactly** — the timer tick divider (100 MHz core clock → 1 MHz tick).
+The `timer = 70` row needs a caveat: it comes from the **unmodified** upstream
+application, where the four sites are not equal — two are armed at 64 and two
+at 70. So it is a 2-episode average, not 4 like the swept points. It is still a
+genuine out-of-sample test (it predates the fit and was not used in it), but it
+is a weaker measurement than the others.
+
+Both coefficients are physically meaningful rather than empirical, and both are
+verifiable from the source rather than inferred from the fit:
+
+- **slope = 100.0 exactly** — the timer tick divider. `main.c:44` sets
+  `kTickFreqHz = 1 MHz` and `sw/device/target/sim/x-heep.h:15` sets
+  `REFERENCE_CLOCK_Hz = 100 MHz`, giving exactly 100 core cycles per tick.
 - **intercept = −188.5** — fixed sequencing overhead. The domain is *not* off for
   the whole nominal window: the shutdown sequence (`iso_off = 10`,
   `reset_off = 15`, `switch_off = 20`) and the wake/ISR path consume cycles at
@@ -116,11 +130,17 @@ at — and taking ΔP = 24 µW:
 | 64 | 6.21 ms | 149 nJ |
 | 256 | 25.4 ms | 610 nJ |
 
-At the idle lengths the reference application uses (timer = 64/70), break-even
-sits at 149 nJ — far above any plausible wake-up energy for a 0.8 V domain, so
-**gating is comfortably worthwhile there**. The decision only becomes
-genuinely load-bearing at short idles, where break-even falls into the
-single-nanojoule range and therefore depends on the unreported E_wake.
+The spread is the point: break-even moves by **two orders of magnitude** across
+the measured idle range, from 2.7 nJ to 610 nJ. So "is gating worth it?" has no
+single answer for this design — it depends on the idle length, and at short
+idles it depends on E_wake at a resolution the paper does not provide.
+
+Whether 149 nJ is comfortably above a real CPU-domain wake-up energy is not
+something this experiment can settle: that figure depends on domain
+capacitance and the technology node, neither of which is modelled here. The
+defensible statement is the conditional one — gating pays iff
+E_wake < ΔP·T_off, and this work supplies T_off exactly while E_wake remains
+unreported upstream.
 
 ## Limitations
 
