@@ -40,7 +40,8 @@ Two knobs in `example_power_manager/main.c` were swept:
 For each point: rebuild the firmware, run the Verilator model, and measure the
 power-domain transitions directly from the FST waveform.
 
-Measured from `tb_top.core_v_mini_mcu_i`:
+`measure_pg.py` matches these signals by name, at whatever hierarchy level they
+appear in the trace (the testbench instantiates the DUT as `testharness_i`):
 
 - `off_cycles`  — `cpu_subsystem_powergate_switch_no` low → high (domain truly off)
 - `wake_cycles` — switch-on → `cpu_subsystem_powergate_iso_n` release (full recovery)
@@ -146,17 +147,27 @@ Verilator  5.040 2025-08-30
 compiler   riscv32-corev-elf-gcc (corev-openhw-gcc-ubuntu2004-20240530) 14.1.0
 ```
 
+`sweep_pg.py` and `measure_pg.py` locate the tree relative to their own
+location, so they must be run **from the x-heep root**:
+
 ```sh
-export RISCV_XHEEP=$HOME/tools/riscv
+cd /path/to/x-heep
+cp /path/to/this-repo/{sweep_pg.py,measure_pg.py,breakeven.py} .
+git apply /path/to/this-repo/printf-in-sim.patch
+
+export RISCV_XHEEP=$HOME/tools/riscv   # without this, the Makefile derives
+                                       # COMPILER_PREFIX from the host gcc
 export PATH=$HOME/tools/verilator/5.040/bin:$RISCV_XHEEP/bin:$PATH
 source .venv/bin/activate
 
 make mcu-gen MEMORY_BANKS=4   # MEMORY_BANKS is an mcu-gen parameter
 make verilator-build          # builds the C++ model (slow, once)
 
-python3 sweep_pg.py           # sweeps main.c, restores it on exit
+python3 sweep_pg.py           # ~15 min; sweeps main.c, restores it on exit
 python3 breakeven.py
 ```
+
+`fst2vcd` (from gtkwave) must be on `PATH` — `measure_pg.py` shells out to it.
 
 `sweep_pg.py` keeps a pristine copy of `main.c` and restores it after every
 run. The only persistent change to the upstream tree is
