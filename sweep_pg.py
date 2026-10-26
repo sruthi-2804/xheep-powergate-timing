@@ -113,7 +113,7 @@ def measure():
         os.unlink(vcd)
 
     period_ps = 1e6 / CLK_MHZ
-    scale = ts_ps or 1
+    scale = ts_ps   # parse_vcd guarantees this is set
 
     eps = episodes(series["switch"])
     offs, wakes = [], []

@@ -52,6 +52,18 @@ and GPIO wake tests in the application (`main.c` lines 129–171 vs 189/257).
 in the CSV is capped at 4 by construction and is a sanity check, not a count of
 all gating events in the run.
 
+A full trace confirms this directly — it contains 7 episodes:
+
+| # | off (cyc) | what |
+|---:|---:|---|
+| 1 | 0.5 | reset artifact at t=0, dropped by an `off < 1` filter |
+| 2–5 | 810–812 | the four timer-driven episodes (this is `timer = 10`) |
+| 6 | 606.0 | DMA wake test |
+| 7 | 1860.0 | GPIO wake test |
+
+Running `measure_pg.py` on a waveform directly prints all episodes, so this is
+checkable rather than asserted.
+
 Scripts: `measure_pg.py` (waveform → cycle counts), `sweep_pg.py` (sweep
 driver), `breakeven.py` (analysis).
 
@@ -85,9 +97,15 @@ iso_on = reset_on + 5`). Measured exactly at delta = 20, 100, 1000.
 |---:|---:|---:|---:|---|
 | 3 | 111.5 | 111.2 | −0.3 | measured after fitting |
 | 5 | 311.5 | 311.2 | −0.3 | measured after fitting |
+| 10 | 811.5 | 811.2 | −0.3 | measured after fitting (see note) |
 | 64 | 6211.5 | 6211.5 | +0.0 | used in fit |
 | 70 | 6811.5 | 6812.0 | +0.5 | **held out** — unmodified upstream run, not used in fit |
 | 256 | 25411.5 | 25411.5 | +0.0 | used in fit |
+
+The `timer = 10` run was interrupted after the timer phase, so it is absent
+from `sweep_results_all.csv`, which only records runs that completed every
+test. Its four timer episodes (810, 812, 811, 812) had already been traced and
+are reported here as an additional check.
 
 Max error 0.5 cycles across an 85× range in idle length.
 
