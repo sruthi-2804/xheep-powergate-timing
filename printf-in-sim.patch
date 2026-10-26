@@ -1,0 +1,13 @@
+diff --git a/sw/applications/example_power_manager/main.c b/sw/applications/example_power_manager/main.c
+index 90398714..24b5cc16 100644
+--- a/sw/applications/example_power_manager/main.c
++++ b/sw/applications/example_power_manager/main.c
+@@ -29,7 +29,7 @@
+ 
+ /* By default, printfs are activated for FPGA and disabled for simulation. */
+ #define PRINTF_IN_FPGA  1
+-#define PRINTF_IN_SIM   0
++#define PRINTF_IN_SIM   1
+ 
+ #if TARGET_SIM && PRINTF_IN_SIM
+         #define PRINTF(fmt, ...)    printf(fmt, ## __VA_ARGS__)
