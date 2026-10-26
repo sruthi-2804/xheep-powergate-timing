@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="450" viewBox="0 0 760 450" font-family="system-ui,sans-serif">
+<rect width="760" height="450" fill="#ffffff"/>
+<line x1="85" y1="392.0" x2="730" y2="392.0" stroke="#d8dee4"/>
+<text x="75" y="396.0" font-size="12" fill="#24292f" text-anchor="end">0</text>
+<line x1="85" y1="325.5" x2="730" y2="325.5" stroke="#d8dee4"/>
+<text x="75" y="329.5" font-size="12" fill="#24292f" text-anchor="end">5,000</text>
+<line x1="85" y1="258.9" x2="730" y2="258.9" stroke="#d8dee4"/>
+<text x="75" y="262.9" font-size="12" fill="#24292f" text-anchor="end">10,000</text>
+<line x1="85" y1="192.4" x2="730" y2="192.4" stroke="#d8dee4"/>
+<text x="75" y="196.4" font-size="12" fill="#24292f" text-anchor="end">15,000</text>
+<line x1="85" y1="125.8" x2="730" y2="125.8" stroke="#d8dee4"/>
+<text x="75" y="129.8" font-size="12" fill="#24292f" text-anchor="end">20,000</text>
+<line x1="85" y1="59.3" x2="730" y2="59.3" stroke="#d8dee4"/>
+<text x="75" y="63.3" font-size="12" fill="#24292f" text-anchor="end">25,000</text>
+<line x1="85.0" y1="46" x2="85.0" y2="392" stroke="#d8dee4"/>
+<text x="85.0" y="412" font-size="12" fill="#24292f" text-anchor="middle">0</text>
+<line x1="204.4" y1="46" x2="204.4" y2="392" stroke="#d8dee4"/>
+<text x="204.4" y="412" font-size="12" fill="#24292f" text-anchor="middle">50</text>
+<line x1="323.9" y1="46" x2="323.9" y2="392" stroke="#d8dee4"/>
+<text x="323.9" y="412" font-size="12" fill="#24292f" text-anchor="middle">100</text>
+<line x1="443.3" y1="46" x2="443.3" y2="392" stroke="#d8dee4"/>
+<text x="443.3" y="412" font-size="12" fill="#24292f" text-anchor="middle">150</text>
+<line x1="562.8" y1="46" x2="562.8" y2="392" stroke="#d8dee4"/>
+<text x="562.8" y="412" font-size="12" fill="#24292f" text-anchor="middle">200</text>
+<line x1="682.2" y1="46" x2="682.2" y2="392" stroke="#d8dee4"/>
+<text x="682.2" y="412" font-size="12" fill="#24292f" text-anchor="middle">250</text>
+<line x1="89.5" y1="392.0" x2="730.0" y2="35.2" stroke="#0969da" stroke-width="2"/>
+<circle cx="92.2" cy="390.5" r="5" fill="#1a7f37"/>
+<circle cx="96.9" cy="387.9" r="5" fill="#1a7f37"/>
+<circle cx="108.9" cy="381.2" r="5" fill="#1a7f37"/>
+<circle cx="237.9" cy="309.3" r="5" fill="#1a7f37"/>
+<rect x="247.2" y="296.3" width="10" height="10" fill="#ffffff" stroke="#cf222e" stroke-width="2.5"/>
+<circle cx="696.6" cy="53.8" r="5" fill="#1a7f37"/>
+<line x1="85" y1="392" x2="730" y2="392" stroke="#24292f" stroke-width="1.5"/>
+<line x1="85" y1="46" x2="85" y2="392" stroke="#24292f" stroke-width="1.5"/>
+<text x="85" y="26" font-size="15" font-weight="600" fill="#24292f">CPU off-time vs. timer value</text>
+<text x="380" y="436" font-size="13" fill="#24292f" text-anchor="middle">rv_timer_arm value (ticks)</text>
+<text transform="translate(20,219.0) rotate(-90)" font-size="13" fill="#24292f" text-anchor="middle">off-time (core clock cycles)</text>
+<line x1="113" y1="72" x2="139" y2="72" stroke="#0969da" stroke-width="2"/>
+<text x="147" y="76" font-size="12" fill="#24292f">off = 100·timer − 188.5</text>
+<circle cx="126" cy="94" r="5" fill="#1a7f37"/>
+<text x="147" y="98" font-size="12" fill="#24292f">measured</text>
+<rect x="121" y="111" width="10" height="10" fill="#ffffff" stroke="#cf222e" stroke-width="2.5"/>
+<text x="147" y="120" font-size="12" fill="#24292f">held out of the fit (timer = 70)</text>
+<line x1="162.2" y1="346.8" x2="92.5" y2="388.0" stroke="#cf222e" stroke-width="1" stroke-dasharray="3,2"/>
+<text x="166.2" y="342.8" font-size="11.5" fill="#cf222e">crosses zero at timer ≈ 1.9:</text>
+<text x="166.2" y="357.8" font-size="11.5" fill="#cf222e">shorter idles never gate</text>
+</svg>
