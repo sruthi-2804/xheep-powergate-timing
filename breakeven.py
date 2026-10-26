@@ -21,15 +21,17 @@ the leakage/dynamic balance changes with frequency and voltage.
 DP_UW = 24.0        # uW saved while the CPU domain is gated (paper)
 CLK_MHZ = 1.0       # report at the paper's operating point
 
-# (timer_arm value, measured off-time in core clock cycles)
-MEASURED = [(64, 6211.5), (256, 25411.5)]
+# (timer_arm value, measured off-time in core clock cycles) from
+# sweep_results_all.csv. Short idles first: that is where break-even falls into
+# the range where E_wake decides the answer.
+MEASURED = [(3, 111.2), (5, 311.2), (64, 6211.5), (256, 25411.5)]
 
 for timer, off_cyc in MEASURED:
     off_us = off_cyc / CLK_MHZ                      # cycles / MHz = us
     e_crit_nj = DP_UW * off_us * 1e-12 / 1e-9       # dP[W] * t[s] -> nJ
     print(f"=== timer={timer}: T_off = {off_cyc:.1f} cyc "
           f"= {off_us/1000:.2f} ms at {CLK_MHZ:g} MHz ===")
-    print(f"    breaks even at E_wake = {e_crit_nj:.0f} nJ\n")
+    print(f"    breaks even at E_wake = {e_crit_nj:.1f} nJ\n")
     print(f"    {'E_wake':>9}  {'T_be':>10}  {'gating wins?':>13}")
     for e_nj in (0.1, 1.0, 10.0, 100.0, 1000.0):
         t_be_us = (e_nj * 1e-9) / (DP_UW * 1e-6) * 1e6
