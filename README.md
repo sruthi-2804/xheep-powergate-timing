@@ -5,9 +5,20 @@ run in Verilator on a laptop.
 
 ## Motivation
 
-The X-HEEP paper reports the *benefit* of power-gating the idle CPU subsystem:
-about **24 µW** saved (310 → 286 µW at 1 MHz, 0.8 V). It does not report the
-*cost* of waking the domain back up.
+The X-HEEP paper reports the *benefit* of power-gating the idle CPU subsystem,
+but not the *cost* of waking the domain back up.
+
+The benefit figures are in [arXiv:2401.05548](https://arxiv.org/abs/2401.05548),
+§4.3.1 (acquisition phase, 1 MHz, 0.8 V) — in the running text, not in any
+table or figure:
+
+| configuration | power |
+|---|---|
+| complete system active, host CPU clock-gated when unused | 384 µW |
+| + unused memory banks, peripheral domain and external accelerators off | 310 µW (−19 %) |
+| + CPU turned off during idle periods | **286 µW** (−8 %) |
+
+So ΔP = 310 − 286 = **24 µW**.
 
 That cost matters, because gating only pays for itself when
 
@@ -160,6 +171,26 @@ defensible statement is the conditional one — gating pays iff
 E_wake < ΔP·T_off, and this work supplies T_off exactly while E_wake remains
 unreported upstream.
 
+### Why these figures are conservative
+
+ΔP = 24 µW is **not** the CPU domain's idle-but-powered power minus its
+powered-off power. It is an *average saving over the whole acquisition phase*,
+and three things are folded into it:
+
+1. The CPU is not idle the whole time — it wakes to read ADC samples, so the
+   saving only accrues during the idle fraction.
+2. Wake-up overheads are already inside the 286 µW average.
+3. The 310 µW baseline **already clock-gates** the idle CPU. So 24 µW is the
+   marginal benefit of power-gating *on top of* clock-gating — roughly what
+   clock-gating leaves behind, which is mostly leakage.
+
+The instantaneous saving during an idle period is therefore **at least** 24 µW
+and probably more. Since T_be = E_wake / ΔP, using 24 µW *overestimates*
+break-even time, and using it in E_crit = ΔP·T_off *underestimates* the
+tolerable wake-up energy. Both figures in this write-up are consequently
+**conservative bounds**: real gating would pay off at least this early, not
+later.
+
 ## Limitations
 
 - **E_wake is not measurable here.** Verilator is cycle-accurate, not analog: it
@@ -175,7 +206,11 @@ unreported upstream.
 - **Turn-on time is emulated, not physical.** The 20-cycle delay is upstream's
   placeholder; the measured `wake = delta + 5` characterises the power
   manager's sequencing, not any real technology's settling time.
-- ΔP is taken from the paper, not independently reproduced.
+- **ΔP is taken from the paper, not independently reproduced.** It is also a
+  phase average rather than an instantaneous domain delta, and it is measured
+  against an already-clock-gated baseline — see "Why these figures are
+  conservative". Reproducing it would need gate-level power analysis, which is
+  outside what an RTL simulation can provide.
 
 ## Reproducing
 

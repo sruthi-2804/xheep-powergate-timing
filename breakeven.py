@@ -6,7 +6,15 @@ the energy spent waking it up:
 
     dP * T_off  >  E_wake        <=>        T_off > T_be = E_wake / dP
 
-dP  : ~24 uW, from the X-HEEP paper (310 -> 286 uW at 1 MHz, 0.8 V).
+dP  : ~24 uW, from the X-HEEP paper (arXiv:2401.05548 S4.3.1, running text:
+      310 -> 286 uW at 1 MHz, 0.8 V).
+
+      Note this is an average saving over the whole acquisition phase, against
+      a baseline that already clock-gates the idle CPU - not an instantaneous
+      idle-on minus off delta for the domain. The true instantaneous saving is
+      therefore at least 24 uW, which makes every break-even time below an
+      upper bound and every tolerable E_wake a lower bound. These figures are
+      conservative, not optimistic.
 T_off: measured here from the RTL waveform (see sweep_results.csv).
 
 E_wake is deliberately swept, not measured. Verilator is cycle-accurate, not
