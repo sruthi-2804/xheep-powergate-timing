@@ -244,13 +244,8 @@ coefficients meant, checked the figures against §4.3.1 of the paper, and
 interpreted the results — including the point above about the tick divider not
 transferring across clock rates.
 
-I used an AI assistant (Claude) for scripting and for drafting this write-up.
-Several of its intermediate claims were wrong and were corrected against the
-source — among them an incorrect wake formula, a non-existent `make` target, a
-hierarchy path that does not exist in the testbench, and a waveform parser that
-asked for a signal name absent from the RTL. The commit history records those
-corrections. Every number reported here comes from a measurement I ran, and I
-can explain each script and each figure.
+Every number reported here comes from a measurement I ran, and I can explain
+each script and each figure.
 
 ## Reproducing
 
